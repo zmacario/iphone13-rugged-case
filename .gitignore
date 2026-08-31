@@ -1,0 +1,13 @@
+# arquivos de versões congeladas (histórico local, fora do repositório público)
+v1/
+v2/
+v4/
+
+# README em português mantido local (o repositório é em inglês)
+README.pt-BR.md
+
+# temporários do FreeCAD e do Python
+*.FCBak
+__pycache__/
+*.pyc
+.DS_Store
