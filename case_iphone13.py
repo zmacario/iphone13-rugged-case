@@ -389,6 +389,12 @@ for nome, sh in parts:
           % (nome, sh.isValid(), len(sh.Solids), bb.XLength, bb.YLength, bb.ZLength,
              sh.Volume/1000.0, sh.Volume/1000.0*1.24))
 print("conjunto      : %.1f cm3 | %.0f g em PLA" % (tot/1000.0, tot/1000.0*1.24))
+if len(parts) == 2:
+    # A checagem que importa numa peca dividida: as duas metades nao podem
+    # ocupar o mesmo espaco, ou nao fecham.
+    _int = parts[0][1].common(parts[1][1]).Volume
+    print("interferencia : %.4f mm3  %s"
+          % (_int, "OK" if _int < 1e-3 else "<< AS PECAS SE SOBREPOEM"))
 print("parede %.2f mm | costas %.2f mm | recuo da lente %.2f mm"
       % (WALL, BACK, BACK - CAM_BUMP_H))
 print("rasgo camera  : %.1f -> %.1f mm" % (CAM_W, CAM_OUT_W))
