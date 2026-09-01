@@ -6,7 +6,7 @@ import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 D = os.path.dirname(os.path.abspath(__file__))
-sh = Part.Shape(); sh.read(os.path.join(D, "capa_v4_conjunto.step"))
+sh = Part.Shape(); sh.read(os.path.join(D, "capa_v6_conjunto.step"))
 sol = sh.Solids
 base, aro = (sol[0], sol[1]) if sol[0].BoundBox.ZLength < sol[1].BoundBox.ZLength else (sol[1], sol[0])
 CAMY = 146.7/2 - 6.0 - 30.2/2
@@ -23,7 +23,7 @@ fig, axs = plt.subplots(1, 3, figsize=(16.5, 6.2), facecolor="white")
 
 for ax, y, tit, xlim, ylim in (
     (axs[0], -20.0, u"ENCAIXE  (corte em y=-20)\nmacho do aro 1,4×1,6 dentro da fêmea da base", (33, 41), (-0.5, 8)),
-    (axs[1], -8.5, u"PARAFUSO DO MEIO  (corte em y=-8,5)\nnovo na v3: rebaixo na base, furo-guia no aro", (33, 45), (-0.5, 14)),
+    (axs[1], -8.5, u"PARAFUSO DO MEIO  (corte em y=-8,5)\nv5: porca embutida na base, cabeca na borda frontal", (33, 45), (-0.5, 14.5)),
     (axs[2], CAMY, u"CÂMERA  (corte no centro da ilha)\nrasgo abocardado, costas de 4 mm", (-45, 45), (-1, 14))):
     draw(ax, base, CB, (0,1,0), y, 0, 2)
     draw(ax, aro,  CA, (0,1,0), y, 0, 2)
