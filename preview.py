@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection
 
 D = os.path.dirname(os.path.abspath(__file__))
-sh = Part.Shape(); sh.read(os.path.join(D, "capa_v4_conjunto.step"))
+sh = Part.Shape(); sh.read(os.path.join(D, "capa_v6_conjunto.step"))
 sol = sh.Solids
 base, aro = (sol[0], sol[1]) if sol[0].BoundBox.ZLength < sol[1].BoundBox.ZLength else (sol[1], sol[0])
 
