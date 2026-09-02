@@ -53,20 +53,43 @@ POCKET  = 1.6   # bolsa de ar interna no canto (zona de deformacao). 0 = desliga
 POCKET_CLR = 1.2  # parede entre o canal do parafuso e a bolsa de ar
 
 # --- Recortes da camera (VERIFICAR COM PAQUIMETRO - ver README) -------------
-CAM_ISL      = 30.2   # lado da ilha de cameras (quadrada) - ESTIMADO
-CAM_ISL_R    = 8.4    # raio dos cantos da ilha
-CAM_FROM_TOP = 6.0    # da borda superior do aparelho ate a borda da ILHA
-CAM_FROM_SIDE= 6.2    # da borda lateral (+X) do aparelho ate a borda da ILHA
+# v8: a ilha e tronco-piramidal - 30,0 mm no plato das lentes, 32,7 mm na BASE,
+# onde encosta no vidro traseiro. O rasgo tem que vencer a BASE, que e o que
+# toca a capa. Medido no aparelho: 112,5 + 32,7 + 1,5 = 146,7, fecha exato.
+CAM_ISL      = 32.7   # lado da ilha na BASE (quadrada) - MEDIDO
+CAM_ISL_R    = 9.0    # raio dos cantos da ilha
+# v8: os dois recuos foram medidos direto no aparelho, e a terceira medida
+# (112,5 mm da borda de baixo ate a base da ilha) fecha a conta sem sobra:
+# 112,5 + 32,7 + 1,5 = 146,7. Ate a v7 eu modelava o PLATO da ilha, nao a base.
+CAM_FROM_TOP = 1.5    # da borda superior do aparelho ate a borda da ILHA - MEDIDO
+CAM_FROM_SIDE= 1.5    # da borda lateral (+X) do aparelho ate a borda da ILHA - MEDIDO
 CAM_CLR      = 0.9    # folga em volta da ilha
 CAM_FLARE    = 2.2    # abocardamento do rasgo por lado (evita vinheta na ultra-wide)
+# v8: o abocardamento e ASSIMETRICO. Do lado da camera sobram 1,5 mm de vidro
+# ate a borda do aparelho, e essa faixa e justamente onde mora o parafuso do
+# canto +X. Deslocando a boca em -CAM_FLARE no eixo X, a aresta +X da boca fica
+# alinhada com a do rasgo estreito e o abocardamento acontece so para dentro.
+# A boca abre so em direcao ao CENTRO do aparelho, nos dois eixos. Nas duas
+# arestas onde a ilha fica a 1,5 mm da borda do aparelho nao ha espaco para
+# abocardar: essa faixa e a que sustenta os parafusos do canto e do topo.
+CAM_MOUTH_DX = -CAM_FLARE
+CAM_MOUTH_DY = -CAM_FLARE
 CAM_BUMP_H   = 1.9    # saliencia da camera acima das costas do aparelho (so p/ relatorio)
 
 # --- Botoes e portas: centro medido a partir do TOPO do aparelho ------------
-MUTE_Y,  MUTE_LEN  = 28.5, 12.0   # chave silencioso  (lado -X)
-VOL_Y,   VOL_LEN   = 54.0, 31.0   # janela unica cobrindo volume + e -  (lado -X)
-PWR_Y,   PWR_LEN   = 46.5, 26.0   # power / lateral   (lado +X)
+# v7: corrigidos com o aro impresso e testado no aparelho. As bordas em
+# distancia a partir do TOPO ficaram: silencioso 26,00->36,50 | coluna de
+# separacao 36,50->38,50 (2,0 mm) | volume 38,50->67,00.
+MUTE_Y,  MUTE_LEN  = 31.25, 10.5  # chave silencioso  (lado -X)
+VOL_Y,   VOL_LEN   = 52.75, 28.5  # janela unica cobrindo volume + e -  (lado -X)
+PWR_Y,   PWR_LEN   = 51.5, 22.0   # power / lateral   (lado +X)
+                                  # v7: 40,50 -> 62,50 do topo, tambem medido
+                                  # no aro impresso (-7,0 em cima, +3,0 embaixo)
 PORT_W             = 17.0         # rasgo do Lightning (base)
-SPK_W, SPK_X       = 14.0, 18.0   # rasgos alto-falante/microfone (base)
+SPK_W, SPK_X       = 12.0, 17.0   # rasgos alto-falante/microfone (base)
+                                  # v7: 11,0 -> 23,0 mm do centro. A borda de
+                                  # dentro nao mudou; fechou 2,0 pelo lado do
+                                  # canto. A porta Lightning ficou intacta.
 
 # --- Textura e pegada ------------------------------------------------------
 HEX_AF, HEX_PITCH, HEX_DEPTH = 6.4, 8.6, 1.20  # favo nas costas (alivia peso das costas grossas)
@@ -117,6 +140,10 @@ SCREW_D     = 7.0    # posicao ao longo da parede longa, a partir do centro do a
 # O do fundo nao pode ser central: os rasgos do alto-falante ocupam x de 11 a 25 mm.
 SHORT_EDGE_SCREWS = True   # False = volta aos 6 parafusos da v3 (so laterais)
 SCREW_TOP_X = 20.0   # parafusos da aresta do topo (mesmo aperto: bolsa de ar x ressalto)
+# Os dois lados levam parafuso no topo. So foi possivel manter o do lado da
+# camera porque a boca do rasgo abocarda apenas para dentro: sem isso ela subiria
+# ate y=74,95 e comeria o bolso da porca, que comeca em 74,05.
+SCREW_TOP_SIDES = (-1, 1)
 SCREW_BOT_X = 30.0   # parafusos da aresta do fundo (empurrados pelo alto-falante).
                      # Mais para fora nao da: a superficie externa ja curva ali.
 
@@ -173,7 +200,7 @@ MARG_IN = MARG_OUT = MARG
 SCREWS = [(gx*sxp, gy*syp, 30.0) for gx in (-1, 1) for gy in (-1, 1)] + \
          [(gx*sxp, MIDPAD_Y, 30.0) for gx in (-1, 1)]
 if TWO_PIECE and SHORT_EDGE_SCREWS:
-    SCREWS += [(gx*SCREW_TOP_X,  syp_t, 0.0) for gx in (-1, 1)] + \
+    SCREWS += [(gx*SCREW_TOP_X,  syp_t, 0.0) for gx in SCREW_TOP_SIDES] + \
               [(gx*SCREW_BOT_X, -syp_t, 0.0) for gx in (-1, 1)]
 if not TWO_PIECE:
     SCREWS = []
@@ -284,10 +311,12 @@ cam_cx = PW/2.0 - CAM_FROM_SIDE - CAM_ISL/2.0
 cam_cy = PL/2.0 - CAM_FROM_TOP  - CAM_ISL/2.0
 CAM_OUT_W = CAM_W + 2*CAM_FLARE
 CAM_OUT_R = CAM_R + CAM_FLARE
-flare = Part.makeLoft([rrect_wire(CAM_OUT_W, CAM_OUT_W, CAM_OUT_R, cam_cx, cam_cy, 0.0),
+flare = Part.makeLoft([rrect_wire(CAM_OUT_W, CAM_OUT_W, CAM_OUT_R,
+                                  cam_cx + CAM_MOUTH_DX, cam_cy + CAM_MOUTH_DY, 0.0),
                        rrect_wire(CAM_W,     CAM_W,     CAM_R,     cam_cx, cam_cy, BACK)],
                       True, True)
-flare = flare.fuse(rrect(CAM_OUT_W, CAM_OUT_W, 1.5, CAM_OUT_R, cam_cx, cam_cy, -1.5))
+flare = flare.fuse(rrect(CAM_OUT_W, CAM_OUT_W, 1.5, CAM_OUT_R,
+                         cam_cx + CAM_MOUTH_DX, cam_cy + CAM_MOUTH_DY, -1.5))
 flare = flare.fuse(rrect(CAM_W, CAM_W, 1.5, CAM_R, cam_cx, cam_cy, BACK))
 cuts.append(flare.removeSplitter())
 
@@ -409,7 +438,10 @@ if TWO_PIECE:
     screws = SCREWS
     # Ao longo da aresta curta o ressalto so tem espessura cheia nesta faixa em X:
     _full_x = math.sqrt(max(BUMP_R**2 - (OL/2.0 + BUMP - ccy)**2, 0.0))
-    _cam_gap = (syp_t - SCREW_HEAD/2.0) - (cam_cy + CAM_OUT_W/2.0)
+    # so faz sentido se houver parafuso no topo do lado da camera
+    # a boca e deslocada, entao a borda de cima dela nao e cam_cy + metade
+    _cam_gap = ((syp_t - SCREW_HEAD/2.0) - (cam_cy + CAM_MOUTH_DY + CAM_OUT_W/2.0)
+                if 1 in SCREW_TOP_SIDES else 99.9)
     _spk_gap = (SCREW_BOT_X - SCREW_HEAD/2.0) - (SPK_X + SPK_W/2.0)
     VAO = max(syp - MIDPAD_Y, MIDPAD_Y + syp)
     _jan = PL/2.0 - VOL_Y - VOL_LEN/2.0
@@ -524,20 +556,25 @@ if len(parts) == 2:
           % (_int, "OK" if _int < 1e-3 else "<< AS PECAS SE SOBREPOEM"))
 print("parede %.2f mm | costas %.2f mm | recuo da lente %.2f mm"
       % (WALL, BACK, BACK - CAM_BUMP_H))
-print("rasgo camera  : %.1f -> %.1f mm" % (CAM_W, CAM_OUT_W))
+print("rasgo camera  : %.1f -> %.1f mm (boca deslocada %.1f/%.1f: abocarda so para dentro)"
+      % (CAM_W, CAM_OUT_W, CAM_MOUTH_DX, CAM_MOUTH_DY))
 if TWO_PIECE:
     print("parafusos     : %d x %s" % (len(screws), SCREW_N))
     print("  cantos: (x=+-%.2f, y=+-%.2f) | meio das laterais: (x=+-%.2f, y=%.2f)"
           % (sxp, syp, sxp, MIDPAD_Y))
-    print("  topo: (x=+-%.2f, y=%.2f) | fundo: (x=+-%.2f, y=%.2f)"
-          % (SCREW_TOP_X, syp_t, SCREW_BOT_X, -syp_t))
+    print("  topo: %d parafuso(s) em x=%s, y=%.2f | fundo: (x=+-%.2f, y=%.2f)"
+          % (len(SCREW_TOP_SIDES), ", ".join("%+.1f" % (g*SCREW_TOP_X) for g in SCREW_TOP_SIDES),
+             syp_t, SCREW_BOT_X, -syp_t))
     print("  vao maximo nas laterais: %.2f mm (era %.2f mm com 4 parafusos)" % (VAO, 2*syp))
     print("  vao no topo: %.2f mm | no fundo: %.2f mm" % (2*SCREW_TOP_X, 2*SCREW_BOT_X))
     for _l, _x in (("topo ", SCREW_TOP_X), ("fundo", SCREW_BOT_X)):
         print("  %s: ressalto com espessura cheia? %s  (x cheio de %.2f a %.2f)"
               % (_l, "sim" if abs(_x - ccx) <= _full_x else "NAO",
                  ccx - _full_x, ccx + _full_x))
-    print("  folga rebaixo do topo -> rasgo da camera : %.2f mm %s" % (_cam_gap, "OK" if _cam_gap > 1.0 else "<< FINO"))
+    if 1 in SCREW_TOP_SIDES:
+        print("  folga rebaixo do topo -> rasgo da camera : %.2f mm %s" % (_cam_gap, "OK" if _cam_gap > 1.0 else "<< FINO"))
+    else:
+        print("  sem parafuso no topo do lado da camera")
     print("  folga rebaixo do fundo -> alto-falante   : %.2f mm %s" % (_spk_gap, "OK" if _spk_gap > 1.0 else "<< FINO"))
     print("  topo do reforco do meio em y=%.2f, janela do volume comeca em y=%.2f  %s"
           % (_top, _jan, "OK" if _top < _jan - 0.5 else "<< INVADE A JANELA"))
@@ -584,7 +621,7 @@ for nome, sh in parts:
     o = doc.addObject("Part::Feature", nome); o.Shape = sh; objs.append(o)
 doc.recompute()
 
-pref = "capa_v6" if TWO_PIECE else "capa_iphone13_militar"
+pref = "capa_v8" if TWO_PIECE else "capa_iphone13_militar"
 step = os.path.join(OUT_DIR, pref + ("_conjunto.step" if TWO_PIECE else ".step"))
 Part.export(objs, step)
 print("\nSTEP -> %s  (%d corpos)" % (step, len(objs)))
