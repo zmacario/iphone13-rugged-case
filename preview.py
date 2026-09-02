@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Folha de vistas da v2 (duas pecas)."""
+"""View sheet of the two parts.
+
+Run inside FreeCAD's interpreter, after case_iphone13.py has written the STEP:
+
+    /Applications/FreeCAD.app/Contents/Resources/bin/freecadcmd preview.py
+"""
 import os, numpy as np, Part
 from FreeCAD import Vector
 import matplotlib; matplotlib.use("Agg")
@@ -7,7 +12,7 @@ import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection
 
 D = os.path.dirname(os.path.abspath(__file__))
-sh = Part.Shape(); sh.read(os.path.join(D, "capa_v6_conjunto.step"))
+sh = Part.Shape(); sh.read(os.path.join(D, "capa_v8_conjunto.step"))
 sol = sh.Solids
 base, aro = (sol[0], sol[1]) if sol[0].BoundBox.ZLength < sol[1].BoundBox.ZLength else (sol[1], sol[0])
 
@@ -26,8 +31,8 @@ def render(ax, peças, d, up, title):
     P, C = [], []
     for nome, T, N in peças:
         v = N @ d > 0.001; t, n = T[v], N[v]
-        # luz relativa a camera (alto-esquerda da tela): sem isso as cavidades
-        # do favo viram ilusao de cratera e parecem saliencias
+        # Light relative to the camera (upper left of the frame). Without this the
+        # honeycomb recesses invert into an illusion of bumps.
         L = -0.45*rx + 0.55*ry + 0.70*d; L /= np.linalg.norm(L)
         inten = 0.30 + 0.70*np.clip(n @ L, 0, 1)
         P.append(t); C.append(np.clip(COR[nome][None,:]*inten[:,None]*1.65, 0, 1))
@@ -40,17 +45,17 @@ def render(ax, peças, d, up, title):
     ax.set_aspect("equal"); ax.axis("off"); ax.set_title(title, fontsize=9, color="#333")
 
 Tb, Nb = tri(base); Ta, Na = tri(aro)
-Tae, Nae = tri(aro, dz=26.0)                      # vista explodida
+Tae, Nae = tri(aro, dz=26.0)                      # exploded view
 mont = [("base", Tb, Nb), ("aro", Ta, Na)]
 expl = [("base", Tb, Nb), ("aro", Tae, Nae)]
 
 fig, axs = plt.subplots(2, 3, figsize=(15.5, 11), facecolor="white")
-render(axs[0,0], mont, (0.55,0.4,-1), (0,1,0), "montada - costas 3/4")
-render(axs[0,1], expl, (0.8,0.35,-0.75), (0,1,0), "explodida (aro deslocado 26 mm)")
-render(axs[0,2], mont, (-0.5,-0.35,1), (0,1,0), "montada - frente 3/4")
-render(axs[1,0], [("base", Tb, Nb)], (0.2,0.15,1), (0,1,0), "BASE - face interna (femea + furos)")
-render(axs[1,1], [("aro", Ta, Na)], (0.2,0.15,-1), (0,1,0), "ARO - face de juncao (macho + furos-guia)")
-render(axs[1,2], [("base", Tb, Nb)], (0,0,-1), (0,1,0), "BASE - face externa: os 10 rebaixos")
+render(axs[0,0], mont, (0.55,0.4,-1), (0,1,0), "assembled - back 3/4")
+render(axs[0,1], expl, (0.8,0.35,-0.75), (0,1,0), "exploded (frame lifted 26 mm)")
+render(axs[0,2], mont, (-0.5,-0.35,1), (0,1,0), "assembled - front 3/4")
+render(axs[1,0], [("base", Tb, Nb)], (0.2,0.15,1), (0,1,0), "PLATE - inner face (groove + through holes)")
+render(axs[1,1], [("aro", Ta, Na)], (0.2,0.15,-1), (0,1,0), "FRAME - joint face (tongue + screw channels)")
+render(axs[1,2], [("base", Tb, Nb)], (0,0,-1), (0,1,0), "PLATE - outer face: the 10 nut pockets")
 plt.tight_layout()
 plt.savefig(os.path.join(D, "preview.png"), dpi=105, facecolor="white")
 print("-> preview.png")

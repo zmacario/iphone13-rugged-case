@@ -4,9 +4,24 @@ v2/
 v4/
 v5/
 v6/
+v7/
+v8/
 
-# README em português mantido local (o repositório é em inglês)
+# material em português mantido local (o repositório é em inglês)
 README.pt-BR.md
+*_antes_depois.png
+
+# artefatos de versões anteriores que ficaram na pasta de trabalho
+capa_v1*
+capa_v2*
+capa_v3*
+capa_v4*
+capa_v5*
+capa_v6*
+capa_v7*
+
+# saída do fatiador (perfil de impressora, local)
+*.3mf
 
 # temporários do FreeCAD e do Python
 *.FCBak
