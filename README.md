@@ -247,9 +247,14 @@ kills you is off the axis: the corner of the hex pocket, the curve of the pad, t
 behind the cavity wall. The formula reported 1.30 mm where the real wall was 0.66 mm, and it
 missed a hole that had broken into an air pocket entirely.
 
-Current minimums: **1.20 mm** around the nut pockets, **1.40 mm** around the head recesses,
-**1.20 mm** around the screw channels. Interference between the two assembled parts: **0.0000
-mm³**, verified by boolean on every run.
+Current minimums: **1.35 mm** around the nut pockets (at the two screws on the camera side;
+1.50-1.60 mm at the other eight), **1.45 mm** around the head recesses, **1.20 mm** around the
+screw channels (at the two bottom screws; 1.40 mm at the other eight). Interference between the
+two assembled parts: **0.0000 mm³**, verified by boolean on every run.
+
+The probe used to step in 0.2 mm increments, so a real 1.35 mm wall failed the 1.4 test and was
+reported as 1.20. It now steps in 0.05 mm through the range that matters. Wall figures quoted in
+the version narratives above come from the coarse probe and are approximate.
 
 ### On PLA, honestly
 

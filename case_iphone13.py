@@ -513,7 +513,12 @@ if TWO_PIECE:
     # esta acima do favo e abaixo do rasgo do encaixe, entao mede parede de
     # verdade e nao vazio de projeto.
     def _margin(solid, mk):
-        for m in (1.6, 1.4, 1.2, 1.0, 0.8, 0.6):
+        # Passo de 0,05 mm na faixa que interessa. Com o passo antigo de 0,2
+        # a parede de 1,35 dos dois parafusos do lado da camera falhava no
+        # teste de 1,4 e era reportada como 1,2 - o README dizia 1,40 e o
+        # relatorio dizia 1,20 sem que nenhum dos dois estivesse errado.
+        for m in (1.8, 1.7, 1.6, 1.5, 1.45, 1.4, 1.35, 1.3, 1.25, 1.2,
+                  1.15, 1.1, 1.05, 1.0, 0.9, 0.8, 0.7, 0.6):
             if mk(m).cut(mk(0.0)).cut(solid).Volume < 0.5:
                 return m
         return 0.0
@@ -583,11 +588,11 @@ if TWO_PIECE:
     print("  margem %-28s: %.2f mm %s" % (_l1, MARG_IN,  "OK" if MARG_IN  > 1.0 else "<< FINO"))
     print("  margem %-28s: %.2f mm %s" % (_l2, MARG_OUT, "OK" if MARG_OUT > 1.0 else "<< FINO"))
     if NUT:
-        print("  parede em volta do bolso da porca (medida no solido): >= %.1f mm %s"
+        print("  parede em volta do bolso da porca (medida no solido): >= %.2f mm %s"
               % (_mn_nut, "OK" if _mn_nut >= 1.0 else "<< FINO"))
-    print("  parede em volta do rebaixo da cabeca (medida no solido): >= %.1f mm %s"
+    print("  parede em volta do rebaixo da cabeca (medida no solido): >= %.2f mm %s"
           % (_mn_head, "OK" if _mn_head >= 1.0 else "<< FINO"))
-    print("  parede em volta do CANAL no aro (medida no solido)      : >= %.1f mm %s"
+    print("  parede em volta do CANAL no aro (medida no solido)      : >= %.2f mm %s"
           % (_mn_ch, "OK" if _mn_ch >= 1.0 else "<< FINO - checar bolsa de ar"))
     print("encaixe macho/femea: %.1f x %.1f mm, folga %.2f mm" % (TONGUE_W, TONGUE_H, JOINT_GAP))
     if NUT:
